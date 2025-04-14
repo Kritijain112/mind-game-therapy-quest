@@ -4,6 +4,7 @@ import { useApp } from '@/context/AppContext';
 import CharacterDisplay from '@/components/CharacterDisplay';
 import ScenarioCard from '@/components/ScenarioCard';
 import MoodTracker from '@/components/MoodTracker';
+import TestPanel from '@/components/TestPanel';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, BarChart4, Award } from 'lucide-react';
@@ -35,6 +36,11 @@ const Home = () => {
     <div className="pb-20 max-w-lg mx-auto">
       <div className="mb-6 pt-4">
         <CharacterDisplay />
+      </div>
+      
+      {/* Test Panel - Remove this before publishing */}
+      <div className="mb-6">
+        <TestPanel />
       </div>
       
       <section className="mb-6">

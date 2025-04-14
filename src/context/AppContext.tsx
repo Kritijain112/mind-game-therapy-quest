@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { 
   Character, 
@@ -80,10 +81,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   useEffect(() => {
+    console.log("Character updated:", character);
     localStorage.setItem("character", JSON.stringify(character));
   }, [character]);
 
   useEffect(() => {
+    console.log("Progress updated:", progress);
     localStorage.setItem("progress", JSON.stringify(progress));
   }, [progress]);
 
@@ -96,6 +99,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updated.level += 1;
         updated.exp = updated.exp - updated.expToNextLevel;
         updated.expToNextLevel = Math.round(updated.expToNextLevel * 1.5);
+        console.log(`Level up! New level: ${updated.level}`);
       }
       
       return updated;
@@ -110,34 +114,52 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       timestamp: new Date(),
     };
     
-    setProgress(prev => ({
-      ...prev,
-      moodEntries: [newEntry, ...prev.moodEntries],
-    }));
-
-    // Check if this is a new day and update streak
-    const today = new Date().toDateString();
-    const lastActiveDay = progress.lastActiveDate?.toDateString() || "";
-    
-    if (today !== lastActiveDay) {
-      const isConsecutiveDay = new Date(lastActiveDay).getTime() + 86400000 >= new Date(today).getTime();
+    setProgress(prev => {
+      // Check if this is a new day and update streak
+      const today = new Date().toDateString();
+      const lastActiveDay = prev.lastActiveDate?.toDateString() || "";
       
-      setProgress(prev => ({
+      let updatedStreak = prev.currentStreak;
+      let updatedLongestStreak = prev.longestStreak;
+      
+      // Log streak information to help with debugging
+      console.log("Streak info - Current:", prev.currentStreak, "Longest:", prev.longestStreak);
+      console.log("Date info - Today:", today, "Last active:", lastActiveDay);
+      
+      if (today !== lastActiveDay) {
+        const isConsecutiveDay = new Date(lastActiveDay).getTime() + 86400000 >= new Date(today).getTime();
+        
+        updatedStreak = isConsecutiveDay ? prev.currentStreak + 1 : 1;
+        updatedLongestStreak = Math.max(prev.longestStreak, updatedStreak);
+        
+        console.log(`Streak updated. New streak: ${updatedStreak}, Longest: ${updatedLongestStreak}`);
+      }
+      
+      return {
         ...prev,
+        moodEntries: [newEntry, ...prev.moodEntries],
         lastActiveDate: new Date(),
-        currentStreak: isConsecutiveDay ? prev.currentStreak + 1 : 1,
-        longestStreak: Math.max(prev.longestStreak, isConsecutiveDay ? prev.currentStreak + 1 : 1)
-      }));
-    }
+        currentStreak: updatedStreak,
+        longestStreak: updatedLongestStreak
+      };
+    });
   };
   
   const completeScenario = (scenarioId: string, optionId: string) => {
     // Find the scenario and selected option
     const scenario = scenarios.find(s => s.id === scenarioId);
-    if (!scenario) return;
+    if (!scenario) {
+      console.error("Scenario not found:", scenarioId);
+      return;
+    }
     
     const selectedOption = scenario.options.find(o => o.id === optionId);
-    if (!selectedOption) return;
+    if (!selectedOption) {
+      console.error("Option not found:", optionId);
+      return;
+    }
+    
+    console.log(`Completing scenario: ${scenario.title} with option: ${selectedOption.text}`);
     
     // Award experience points
     updateCharacter({
@@ -177,6 +199,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
   
   const unlockAchievement = (achievementId: string) => {
+    console.log("Unlocking achievement:", achievementId);
+    
     setProgress(prev => ({
       ...prev,
       achievements: prev.achievements.map(a => 
@@ -188,12 +212,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
   
   const updateAchievementProgress = (achievementId: string, progress: number) => {
+    console.log(`Updating achievement ${achievementId} progress to ${progress}`);
+    
     setProgress(prev => {
       const updatedAchievements = prev.achievements.map(a => {
         if (a.id === achievementId) {
           const updated = { ...a, progress };
           // Check if achievement should be unlocked
           if (a.goal && progress >= a.goal && !a.isUnlocked) {
+            console.log(`Achievement "${a.title}" unlocked!`);
             updated.isUnlocked = true;
           }
           return updated;
