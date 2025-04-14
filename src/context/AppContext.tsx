@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { 
   Character, 
@@ -118,7 +117,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Check if this is a new day and update streak
     const today = new Date().toDateString();
-    const lastActiveDay = prev.lastActiveDate?.toDateString() || "";
+    const lastActiveDay = progress.lastActiveDate?.toDateString() || "";
     
     if (today !== lastActiveDay) {
       const isConsecutiveDay = new Date(lastActiveDay).getTime() + 86400000 >= new Date(today).getTime();

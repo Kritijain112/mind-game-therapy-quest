@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Smile, Frown, Meh, SmilePlus, FrownOpen } from 'lucide-react';
+import { Smile, Frown, Meh, SmilePlus, Angry } from 'lucide-react';
 import { toast } from "sonner";
 
 const MoodTracker = () => {
@@ -12,7 +12,7 @@ const MoodTracker = () => {
   const [note, setNote] = useState('');
   
   const moodIcons = [
-    { value: 1, icon: <FrownOpen className="w-8 h-8" />, label: 'Very Bad' },
+    { value: 1, icon: <Angry className="w-8 h-8" />, label: 'Very Bad' },
     { value: 2, icon: <Frown className="w-8 h-8" />, label: 'Bad' },
     { value: 3, icon: <Meh className="w-8 h-8" />, label: 'Okay' },
     { value: 4, icon: <Smile className="w-8 h-8" />, label: 'Good' },

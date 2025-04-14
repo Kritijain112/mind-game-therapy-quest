@@ -3,7 +3,7 @@ import React from 'react';
 import { useApp } from '@/context/AppContext';
 import MoodTracker from '@/components/MoodTracker';
 import { Card, CardContent } from '@/components/ui/card';
-import { Smile, Frown, Meh, SmilePlus, FrownOpen } from 'lucide-react';
+import { Smile, Frown, Meh, SmilePlus, Angry } from 'lucide-react';
 import { format } from 'date-fns';
 
 const MoodPage = () => {
@@ -13,7 +13,7 @@ const MoodPage = () => {
   const renderMoodIcon = (mood: number) => {
     switch (mood) {
       case 1:
-        return <FrownOpen className="h-6 w-6 text-red-500" />;
+        return <Angry className="h-6 w-6 text-red-500" />;
       case 2:
         return <Frown className="h-6 w-6 text-orange-500" />;
       case 3:
